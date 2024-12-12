@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izveido savu pasūtījumu!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5e4d3;
+            color: #8b4513;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #a0522d;
+            margin-bottom: 20px;
+        }
+        .customizer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .customizer {
+            display: flex;
+            align-items: center;
+        }
+        .arrow {
+            font-size: 3rem;
+            color: #a0522d;
+            cursor: pointer;
+            user-select: none;
+            margin: 0 20px;
+        }
+        .arrow:hover {
+            color: #d2b48c;
+        }
+        .animal {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('paw_background.png') center/contain no-repeat;
+        }
+        .layer {
+            position: absolute;
+            object-fit: contain;
+            width: 100%;
+            height: 100%;
+        }
+        form {
+            background-color: #ffe4c4;
+            border: 2px solid #a0522d;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        form input, form textarea, form button {
+            width: calc(100% - 20px);
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid #a0522d;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #8b4513;
+            background-color: #f5e4d3;
+        }
+        form button {
+            cursor: pointer;
+            background-color: #8b4513;
+            color: white;
+        }
+        form button:hover {
+            background-color: #d2b48c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Izveido savu pasūtījumu!</h1>
+    <div class="customizer-container">
+        <div class="customizer">
+            <div class="arrow" onclick="changeFeature('animalBase', -1)">&#9664;</div>
+            <div class="animal">
+                <img id="animalBase" class="layer" src="animal_base_1.png" alt="Dzīvnieka pamats">
+                <img id="accessory" class="layer" src="empty.png" alt="Aksesuārs">
+            </div>
+            <div class="arrow" onclick="changeFeature('animalBase', 1)">&#9654;</div>
+        </div>
+        <div class="customizer">
+            <div class="arrow" onclick="changeFeature('accessory', -1)">&#9664;</div>
+            <div class="arrow" onclick="changeFeature('accessory', 1)">&#9654;</div>
+        </div>
+    </div>
+
+    <form id="emailForm">
+        <h2>Sūtīt savu izveidojumu</h2>
+        <input type="email" id="userEmail" placeholder="Jūsu Gmail" required>
+        <textarea id="additionalText" rows="4" placeholder="Pievienot ziņu (pēc izvēles)"></textarea>
+        <button type="submit">Sūtīt</button>
+    </form>
+
+    <script>
+        // Feature images and their possible variations
+        const features = {
+            animalBase: [
+                "animal_base_1.png", "animal_base_0.png", "animal_base_2.png", "animal_base_3.png", 
+                "animal_base_4.png", "animal_base_5.png", "animal_base_6.png", 
+                "animal_base_7.png", "animal_base_8.png", "animal_base_9.png", 
+                "animal_base_10.png", "animal_base_11.png", "animal_base_12.png", "animal_base_13.png", "animal_base_14.png", "animal_base_15.png", "animal_base_16.png", "animal_base_17.png", "animal_base_18.png", "animal_base_19.png"
+            ],
+            accessory: ["empty.png", "accessory_1.png", "accessory_2.png", "accessory_3.png"]
+        };
+
+        // Indices for each feature
+        const indices = {
+            animalBase: 0,
+            accessory: 0,
+        };
+
+        // Function to update feature images
+        function updateFeature(feature) {
+            const img = document.getElementById(feature);
+            img.src = features[feature][indices[feature]];
+        }
+
+        // Function to change feature (left/right arrows)
+        function changeFeature(feature, direction) {
+            indices[feature] = (indices[feature] + direction + features[feature].length) % features[feature].length;
+            updateFeature(feature);
+        }
+
+        // Form submission
+         document.getElementById("emailForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const userEmail = document.getElementById("userEmail").value;
+            const additionalText = document.getElementById("additionalText").value;
+            const animalBase = features.animalBase[indices.animalBase];
+            const accessory = features.accessory[indices.accessory] || "Nav aksesuāra";
+
+            const mailtoLink = `
+                mailto:pekabusmu@gmail.com
+                ?subject=Pekabu izveidojums
+                &body=${encodeURIComponent(`
+                Dzīvnieka pamats: ${animalBase}
+                Aksesuārs: ${accessory}
+                Lietotāja e-pasts: ${userEmail}
+                Ziņa: ${additionalText || "Nav pievienotas ziņas."}
+                `)}
+            `.trim();
+            window.location.href = mailtoLink;
+        });
+    </script>
+</body>
+</html>
